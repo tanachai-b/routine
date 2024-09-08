@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "routine-!@#$%^&*()",
+    "site": "routine-0",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
