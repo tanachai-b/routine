@@ -1,10 +1,22 @@
 import cx from "classnames";
+import { getTimeValue } from "./common-functions";
 import { Marker, Time } from "./components";
 import { useEntries, useTime } from "./hooks";
 
 export default function App() {
   const { time } = useTime();
-  const { timeline, onColorChange, onLabelChange } = useEntries();
+  const { timeline, onColorChange, onLabelChange, getCurrentActivity } = useEntries();
+
+  const { currentActivity, nextActivity } = getCurrentActivity(time);
+  console.log({ currentActivity });
+
+  const newLocal =
+    currentActivity == null ? 0 : (time - getTimeValue(currentActivity.time) + 24) % 24;
+
+  const newLocal2 =
+    nextActivity == null
+      ? 0
+      : (getTimeValue(nextActivity.time) - getTimeValue(currentActivity.time) + 24) % 24;
 
   return (
     <div
@@ -20,10 +32,10 @@ export default function App() {
         // "justify-center",
       )}
     >
-      {/* <div className={cx("w-full", "max-w-[500px]", "p-[20px]")}>
-        <div>Sleep</div>
-        <div>5hrs</div>
-      </div> */}
+      <div className={cx("w-full", "max-w-[500px]", "p-[20px]")}>
+        <div>{currentActivity?.activity}</div>
+        <div>{((newLocal / newLocal2) * 100).toFixed()} %</div>
+      </div>
 
       <div
         className={cx(
