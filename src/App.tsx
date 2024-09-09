@@ -10,9 +10,10 @@ export default function App() {
   const [time, setTime] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => setTime(getTime()), 1);
+    setTime(getTime());
+    const intervalId = setInterval(() => setTime(getTime()), 60 * 1000);
     return () => clearInterval(intervalId);
-  });
+  }, []);
 
   return (
     <div

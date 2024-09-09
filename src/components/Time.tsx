@@ -35,17 +35,20 @@ export function Time({
         className={cx(
           "w-[70px]",
 
+          "border-b-[1px]",
+          "border-b-[#ffffff10]",
+
           "grid",
           "place-items-center",
 
-          isHighlight ? "text-[#ffffff]" : "text-[#ffffff40]",
+          isHighlight ? "text-[#ffffffc0]" : "text-[#ffffff40]",
         )}
       >
         {time}
       </div>
 
       <div
-        className={cx("w-[10px]")}
+        className={cx("w-[10px]", "cursor-pointer")}
         style={{ backgroundColor: color ?? "#ffffff08" }}
         onClick={() => color != null && ref.current?.click()}
       >
