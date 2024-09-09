@@ -1,63 +1,73 @@
 import { useMemo, useState } from "react";
 import { getRandomColor } from "src/common-functions";
-import { times } from "src/constants";
+import { TIMELINE_TIMES } from "src/constants";
 
-type EntryData = {
+type ActivityData = {
   time: string;
   color: string;
-  label: string;
+  activity: string;
+};
+
+type TimelineData = {
+  time: string;
+  color?: string;
+  label?: string;
+  activity?: string;
 };
 
 export function useEntries() {
-  const [entries, setEntries] = useState<EntryData[]>([
-    { time: "00:00", color: "#6000ff", label: "Sleep" },
-    { time: "07:00", color: "#ff0000", label: "Getting Ready" },
-    { time: "08:00", color: "#ff8000", label: "Read" },
-    { time: "09:00", color: "#0040ff", label: "Work" },
-    { time: "12:00", color: "#ffe000", label: "Lunch" },
-    { time: "13:00", color: "#0040ff", label: "Work" },
-    { time: "18:00", color: "#00c0ff", label: "Swim" },
-    { time: "19:00", color: "#80ff00", label: "Hobby" },
-    { time: "22:00", color: "#ff00c0", label: "Relax" },
-    { time: "23:00", color: "#6000ff", label: "Sleep" },
+  const [entries, setEntries] = useState<ActivityData[]>([
+    { time: "00:00", color: "#6000ff", activity: "Sleep" },
+    { time: "07:00", color: "#ff0000", activity: "Getting Ready" },
+    { time: "08:00", color: "#ff8000", activity: "Read" },
+    { time: "09:00", color: "#0040ff", activity: "Work" },
+    { time: "12:00", color: "#ffe000", activity: "Lunch" },
+    { time: "13:00", color: "#0040ff", activity: "Work" },
+    { time: "18:00", color: "#00c0ff", activity: "Swim" },
+    { time: "19:00", color: "#80ff00", activity: "Hobby" },
+    { time: "22:00", color: "#ff00c0", activity: "Relax" },
+    { time: "23:00", color: "#6000ff", activity: "Sleep" },
   ]);
 
-  const filledEntries = useMemo<(EntryData & { sourceLabel?: string })[]>(() => {
-    let lastEntry: EntryData | undefined = undefined;
+  const timeline = useMemo<TimelineData[]>(() => {
+    let latestEntry: ActivityData | undefined = undefined;
 
-    const filledEntries = times.map((time) => {
+    const timeline = TIMELINE_TIMES.map((time): TimelineData => {
       const entry = entries.find((v) => v.time === time);
 
       if (entry != null) {
-        lastEntry = entry;
-        return entry;
+        latestEntry = entry;
+        return { ...entry, label: entry.activity };
         //
-      } else if (lastEntry != null) {
+      } else if (latestEntry != null) {
         return {
           time,
-          color: lastEntry.color,
+          color: latestEntry.color,
           label: "",
-          sourceLabel: lastEntry.label,
+          activity: latestEntry.activity,
         };
         //
       } else {
-        return undefined;
+        return {
+          time,
+          color: undefined,
+          label: undefined,
+          activity: undefined,
+        };
         //
       }
     });
 
-    const removedBlank = filledEntries.filter((v) => v !== undefined);
-
-    return removedBlank;
+    return timeline;
   }, [entries]);
 
   function onColorChange(label: string, color: string) {
-    const oldEntries = entries.filter((v) => v.label === label);
+    const oldEntries = entries.filter((v) => v.activity === label);
 
     if (oldEntries.length === 0) return;
 
     const newEntries = oldEntries.map((v) => ({ ...v, color }));
-    const removedOldEntry = entries.filter((v) => v.label !== label);
+    const removedOldEntry = entries.filter((v) => v.activity !== label);
     const addedNewEntry = [...removedOldEntry, ...newEntries];
 
     setEntries(addedNewEntry);
@@ -77,22 +87,22 @@ export function useEntries() {
     }
   }
 
-  function addNewEntry(time: string, label: string) {
+  function addNewEntry(time: string, activity: string) {
     const addedNewEntry = [
       ...entries,
-      { time, color: getLabelColor(label) ?? getRandomColor(), label },
+      { time, color: getActivityColor(activity) ?? getRandomColor(), activity },
     ];
     setEntries(addedNewEntry);
   }
 
-  function updateEntry(oldEntry: EntryData, label: string) {
+  function updateEntry(oldEntry: ActivityData, activity: string) {
     const removedOldEntry = entries.filter((v) => v.time !== oldEntry.time);
     const addedNewEntry = [
       ...removedOldEntry,
       {
         time: oldEntry.time,
-        color: getLabelColor(label) ?? oldEntry.color,
-        label,
+        color: getActivityColor(activity) ?? oldEntry.color,
+        activity,
       },
     ];
     setEntries(addedNewEntry);
@@ -103,10 +113,10 @@ export function useEntries() {
     setEntries(removedEntry);
   }
 
-  function getLabelColor(label: string) {
-    const entry = entries.find((v) => v.label === label);
+  function getActivityColor(activity: string) {
+    const entry = entries.find((v) => v.activity === activity);
     return entry?.color;
   }
 
-  return { filledEntries, onColorChange, onLabelChange };
+  return { timeline, onColorChange, onLabelChange };
 }

@@ -11,7 +11,7 @@ export function Time({
   time: string;
   color?: string;
   label?: string;
-  onColorChange: (color: string) => void;
+  onColorChange?: (color: string) => void;
   onLabelChange: (label: string) => void;
 }) {
   const hourString = time.match(/^.*?(?=:)/)?.[0] ?? "";
@@ -23,6 +23,8 @@ export function Time({
   return (
     <div
       className={cx(
+        "h-[30px]",
+
         "flex",
         "flex-row",
 
@@ -31,8 +33,10 @@ export function Time({
     >
       <div
         className={cx(
-          "px-[10px]",
-          "py-[5px]",
+          "w-[70px]",
+
+          "grid",
+          "place-items-center",
 
           isHighlight ? "text-[#ffffff]" : "text-[#ffffff40]",
         )}
@@ -57,7 +61,7 @@ export function Time({
           )}
           type="color"
           value={color ?? ""}
-          onChange={(e) => onColorChange(e.target.value)}
+          onChange={(e) => onColorChange?.(e.target.value)}
         />
       </div>
 
@@ -65,10 +69,9 @@ export function Time({
         className={cx(
           "flex-auto",
 
-          "px-[10px]",
-          "py-[5px]",
-
           "bg-transparent",
+
+          "px-[15px]",
         )}
         type="text"
         value={label ?? ""}
