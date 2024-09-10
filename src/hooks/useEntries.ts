@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { getRandomColor, getTimeValue } from "src/common-functions";
-import { TIMELINE_TIMES } from "src/constants";
+import { INITIAL_ENTRIES, TIMELINE_TIMES } from "src/constants";
 
 type ActivityData = {
   time: string;
@@ -16,17 +16,7 @@ type TimelineData = {
 };
 
 export function useEntries() {
-  const [entries, setEntries] = useState<ActivityData[]>([
-    { time: "07:00", color: "#ff0000", activity: "Getting Ready" },
-    { time: "08:00", color: "#ff8000", activity: "Read" },
-    { time: "09:00", color: "#0040ff", activity: "Work" },
-    { time: "12:00", color: "#ffe000", activity: "Lunch" },
-    { time: "13:00", color: "#0040ff", activity: "Work" },
-    { time: "18:00", color: "#00c0ff", activity: "Swim" },
-    { time: "19:00", color: "#80ff00", activity: "Hobby" },
-    { time: "22:00", color: "#ff00c0", activity: "Relax" },
-    { time: "23:00", color: "#6000ff", activity: "Sleep" },
-  ]);
+  const [entries, setEntries] = useState<ActivityData[]>(INITIAL_ENTRIES);
 
   const timeline = useMemo<TimelineData[]>(() => {
     let latestEntry: ActivityData | undefined = entries[entries.length - 1];
